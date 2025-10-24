@@ -1,14 +1,12 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
-from database.engine import get_db
-from auth.schemas import Token, UserWithPW, User as UserSchema
-from auth.auth import authenticate_user, get_user, auth_exception
+from auth.schemas import Token
+from auth.auth import authenticate_user, auth_exception
 
 router = APIRouter(
     prefix="/auth",
-    responses={404: {"description": "Not Found"}}
+    responses={404: {"description": "Not Found"}, 401: {"description": "Invalid authentication"}}
 )
 
 @router.post("/login", response_model=Token)

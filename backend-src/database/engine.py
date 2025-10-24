@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 engine = create_engine(url="sqlite:///./database.db", echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Proper fetcher for the database session engine, so it closes gracefully
+# Proper generator for the database session engine to share connections when needed.
 def get_db():
     db = SessionLocal()
     try:

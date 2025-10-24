@@ -9,7 +9,8 @@ def initialize_db():
     AuthBase.metadata.create_all(bind=engine)
     CampaignsBase.metadata.create_all(bind=engine)
 
-    # Create a demo user
+    # Create a demo user.
+    # If the user already exists, we'll get a unique username clash on the DB's side, raising an exception that we can then quietly ignore.
     with Session(engine) as session:
         try:
             hashed = get_hash("admin")

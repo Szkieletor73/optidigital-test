@@ -16,25 +16,19 @@ SECRET="fbd3e2407a1f3d9f094650fe0a85c52613367da0887d9d9ad5e1267562594f50"
 ALGORITHM="HS256"
 TOKEN_EXPIRE=60
 
+# Custom authentication exception, for simplicity when reusing.
 auth_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-auth_exception1 = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication1",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-auth_exception2 = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication2",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Invalid authentication",
+    headers={"WWW-Authenticate": "Bearer"},
+)
 
 hasher = PasswordHash.recommended()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
+# Get user data. This doesn't include password - it's a "public-safe" function.
+# We use next(get_db()) instead of pushing dependencies here to avoid having to pass
+# the `db` param through several functions to get here.
 async def get_user(username: str):
     db: Session = next(get_db())
     user: UserModel | None = db.query(UserModel).filter(UserModel.username == username).first()
@@ -42,6 +36,9 @@ async def get_user(username: str):
         return UserSchema(id=user.id, username=user.username)
     return None
 
+# Get user data, with the hashed password. This should only be used for authentication purposes.
+# We use next(get_db()) instead of pushing dependencies here to avoid having to pass
+# the `db` param through several functions to get here.
 async def get_user_with_password(username: str):
     db: Session = next(get_db())
     user: UserModel | None = db.query(UserModel).filter(UserModel.username == username).first()
@@ -49,6 +46,10 @@ async def get_user_with_password(username: str):
         return UserWithPW(id=user.id, username=user.username, password_hash=user.password_hash)
     return None
 
+# Decodes the JWT token passed by the client, and tries to resolve it into a user.
+# If user data is prevent and valid, then the user is considered authenticated with a valid token.
+# Tokens can't really be spoofed because they'd need the correct secret to encode,
+# so if the decoded data is correct, the token can be assumed valid.
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         payload = jwt.decode(token, SECRET, algorithms=ALGORITHM)
@@ -61,9 +62,12 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         raise auth_exception
     return user
 
+# Helper function that returns a hashed version of the input string.
+# We could just use hasher.hash directly, but this lets us reuse the same hasher in other modules.
 def get_hash(password: str):
     return hasher.hash(password)
 
+# Encodes token with given data and expiration parameters.
 def encode_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
@@ -74,6 +78,7 @@ def encode_token(data: dict, expires_delta: timedelta | None = None):
     encoded = jwt.encode(to_encode, SECRET, algorithm=ALGORITHM)
     return encoded
 
+# Entry point of the authentication flow. Takes OAuth2PasswordRequestForm data, verifies, and returns a token if login is valid.
 async def authenticate_user(form_data: OAuth2PasswordRequestForm):
     user: UserWithPW | None = await get_user_with_password(form_data.username)
     if not user:

@@ -4,6 +4,7 @@ from database.init import initialize_db
 from campaigns.router import router as campaigns_router
 from auth.router import router as auth_router
 
+# Run the init function to ensure the database is ready.
 initialize_db()
 
 app = FastAPI(title="Backend API", version="1.0.0")
