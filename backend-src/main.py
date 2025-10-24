@@ -1,5 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from database.init import initialize_db
+from campaigns.router import router as campaigns_router
+from auth.router import router as auth_router
+
+initialize_db()
 
 app = FastAPI(title="Backend API", version="1.0.0")
 
@@ -16,10 +21,7 @@ app.add_middleware(
 async def root():
     return {"message": "Backend API is running"}
 
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
-
-@app.get("/api/hello")
-async def hello():
-    return {"message": "Hello from FastAPI!"}
+# Authentication routes
+app.include_router(auth_router)
+# Campaign-related routes
+app.include_router(campaigns_router)

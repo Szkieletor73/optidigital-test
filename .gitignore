@@ -29,5 +29,6 @@ coverage
 
 *.tsbuildinfo
 
-# Backend .venv
+# Python
 backend-src/.venv
+__pycache__
