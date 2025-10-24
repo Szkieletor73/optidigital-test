@@ -27,10 +27,7 @@ hasher = PasswordHash.recommended()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 # Get user data. This doesn't include password - it's a "public-safe" function.
-# We use next(get_db()) instead of pushing dependencies here to avoid having to pass
-# the `db` param through several functions to get here.
-async def get_user(username: str):
-    db: Session = next(get_db())
+async def get_user(username: str, db: Annotated[Session, Depends(get_db)]):
     user: UserModel | None = db.query(UserModel).filter(UserModel.username == username).first()
     if user:
         return UserSchema(id=user.id, username=user.username)
@@ -39,8 +36,7 @@ async def get_user(username: str):
 # Get user data, with the hashed password. This should only be used for authentication purposes.
 # We use next(get_db()) instead of pushing dependencies here to avoid having to pass
 # the `db` param through several functions to get here.
-async def get_user_with_password(username: str):
-    db: Session = next(get_db())
+async def get_user_with_password(username: str, db: Annotated[Session, Depends(get_db)]):
     user: UserModel | None = db.query(UserModel).filter(UserModel.username == username).first()
     if user:
         return UserWithPW(id=user.id, username=user.username, password_hash=user.password_hash)
@@ -50,14 +46,15 @@ async def get_user_with_password(username: str):
 # If user data is prevent and valid, then the user is considered authenticated with a valid token.
 # Tokens can't really be spoofed because they'd need the correct secret to encode,
 # so if the decoded data is correct, the token can be assumed valid.
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Annotated[Session, Depends(get_db)]):
     try:
         payload = jwt.decode(token, SECRET, algorithms=ALGORITHM)
         if not payload.get("id") or not payload.get("username"):
             raise auth_exception
     except jwt.InvalidTokenError:
         raise auth_exception
-    user: UserSchema | None = await get_user(payload.get("username"))
+    username = payload.get("username")
+    user: UserSchema | None = await get_user(username, db)
     if not user:
         raise auth_exception
     return user
@@ -79,8 +76,8 @@ def encode_token(data: dict, expires_delta: timedelta | None = None):
     return encoded
 
 # Entry point of the authentication flow. Takes OAuth2PasswordRequestForm data, verifies, and returns a token if login is valid.
-async def authenticate_user(form_data: OAuth2PasswordRequestForm):
-    user: UserWithPW | None = await get_user_with_password(form_data.username)
+async def authenticate_user(form_data: OAuth2PasswordRequestForm, db: Session):
+    user: UserWithPW | None = await get_user_with_password(form_data.username, db)
     if not user:
         raise auth_exception
     if not hasher.verify(form_data.password, user.password_hash):
