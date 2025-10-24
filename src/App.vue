@@ -1,24 +1,67 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import router from './router'
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
-const isAuthenticated = computed(() => {
-    return !!localStorage.getItem('access_token')
-})
+const router = useRouter()
+const authStore = useAuthStore()
 
 const logout = () => {
-    localStorage.removeItem('access_token')
+    authStore.logout()
     router.push('/login')
 }
+
+onMounted(() => {
+    authStore.initialize()
+})
 </script>
 
 <template>
-    <nav v-if="isAuthenticated">
-        <button @click="logout">Logout</button>
+    <nav class="user-controls" v-if="authStore.isAuthenticated">
+        <div class="user-greet">Welcome, {{ authStore?.user?.username }}</div>
+        <button class="logout-button" @click="logout">Logout</button>
     </nav>
     <main class="container">
         <RouterView></RouterView>
     </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.user-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+
+    width: 100%;
+    padding: 4px 32px;
+
+    background: var(--color-gray-900);
+    border-bottom: 1px solid var(--color-gray-800);
+}
+
+.user-greet {
+    padding-right: 16px;
+    border-right: 1px solid var(--color-gray-800);
+}
+
+.logout-button {
+    background-color: var(--color-gray-900);
+    color: var(--color-primary-0);
+
+    padding: 8px;
+
+    border: none;
+    border-radius: 2px;
+
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+    background-color: var(--color-gray-800);
+}
+</style>
