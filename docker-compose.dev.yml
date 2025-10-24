@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: optidigital-backend-dev
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - FASTAPI_ENV=development
+    volumes:
+      - ./backend-src:/app
+    networks:
+      - app-network
+    command: ["fastapi", "dev", "main.py", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      target: builder
+    container_name: optidigital-frontend-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - app-network
+    command: ["pnpm", "run", "dev", "--host", "0.0.0.0"]
+    depends_on:
+      - backend
+
+networks:
+  app-network:
+    driver: bridge

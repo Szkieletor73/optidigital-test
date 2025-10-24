@@ -32,3 +32,8 @@ coverage
 # Python
 backend-src/.venv
 __pycache__
+
+# Docker
+.env
+.env.local
+docker-compose.override.yml
