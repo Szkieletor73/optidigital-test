@@ -17,11 +17,11 @@ defineProps<Props>()
 <style scoped>
 .empty-state {
     text-align: center;
-    color: var(--color-gray-500);
+    color: var(--color-gray-400);
 }
 
 .empty-state h3 {
     margin-bottom: 1rem;
-    color: var(--color-gray-300);
+    color: var(--color-gray-200);
 }
 </style>

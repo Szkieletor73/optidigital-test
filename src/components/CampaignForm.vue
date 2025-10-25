@@ -128,20 +128,20 @@ const resetForm = () => {
     min-width: 800px;
     width: fit-content;
 
-    background: var(--color-gray-800);
+    background: var(--color-gray-700);
     padding: 24px;
     margin-bottom: 16px;
 
-    border: 1px solid var(--color-gray-700);
+    border: 1px solid var(--color-gray-500);
     border-radius: 8px;
 
-    box-shadow: 1px 0 4px 2px var(--color-gray-950);
+    box-shadow: 1px 0 4px 2px var(--color-gray-900);
 }
 
 .create-form h3 {
     margin-top: 0;
     margin-bottom: 1.5rem;
-    color: var(--color-gray-0);
+    color: var(--color-gray-50);
 }
 
 .form-row {
@@ -157,17 +157,17 @@ const resetForm = () => {
 .form-group label {
     display: block;
     margin-bottom: 2px;
-    color: var(--color-gray-0);
+    color: var(--color-gray-50);
 }
 
 .form-group input,
 .form-group textarea {
-    background-color: var(--color-gray-900);
+    background-color: var(--color-gray-800);
     color: var(--color-gray-50);
 
     padding: 8px;
 
-    border: 1px solid var(--color-gray-700);
+    border: 1px solid var(--color-gray-600);
     border-radius: 4px;
 
     font-size: 1rem;
@@ -211,7 +211,7 @@ const resetForm = () => {
 
 .form-actions button[type="submit"] {
     background-color: var(--color-success);
-    color: var(--color-success-0);
+    color: var(--color-success-50);
 }
 
 .form-actions button[type="submit"]:hover:not(:disabled) {
@@ -219,17 +219,17 @@ const resetForm = () => {
 }
 
 .form-actions button[type="submit"]:disabled {
-    background-color: var(--color-gray-700);
+    background-color: var(--color-gray-800);
     cursor: not-allowed;
 }
 
 .cancel-button {
     background-color: var(--color-gray-500);
-    color: white;
+    color: var(--color-gray-50);
 }
 
 .cancel-button:hover {
-    background-color: #5a6268;
+    background-color: var(--color-gray-400);
 }
 
 @media (max-width: 768px) {

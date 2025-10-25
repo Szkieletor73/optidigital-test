@@ -103,12 +103,12 @@ const handleCancelForm = () => {
 .campaigns-header h1 {
     margin: 0;
     height: 48px;
-    color: var(--color-gray-100);
+    color: var(--color-gray-10);
 }
 
 .create-button {
-    background-color: var(--color-primary);
-    color: var(--color-primary-0);
+    background-color: var(--color-primary-600);
+    color: var(--color-primary-50);
 
     padding: 12px 24px;
 
@@ -121,7 +121,7 @@ const handleCancelForm = () => {
 }
 
 .create-button:hover {
-    background-color: var(--color-primary-600);
+    background-color: var(--color-primary-500);
 }
 
 @media (max-width: 768px) {

@@ -34,8 +34,7 @@ const formatCurrency = (amount: number) => {
 
 <style scoped>
 .campaigns-stats {
-    background-color: var(--color-gray-800);
-    color: var(--color-gray-0);
+    background-color: var(--color-gray-700);
 
     display: flex;
     gap: 32px;
@@ -52,7 +51,7 @@ const formatCurrency = (amount: number) => {
 
 .stat-label {
     font-size: 0.875rem;
-    color: var(--color-gray-300);
+    color: var(--color-gray-200);
 }
 
 .stat-value {

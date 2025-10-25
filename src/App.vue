@@ -37,18 +37,18 @@ onMounted(() => {
     width: 100%;
     padding: 4px 32px;
 
-    background: var(--color-gray-900);
-    border-bottom: 1px solid var(--color-gray-800);
+    background: var(--color-gray-800);
+    border-bottom: 1px solid var(--color-gray-700);
 }
 
 .user-greet {
     padding-right: 16px;
-    border-right: 1px solid var(--color-gray-800);
+    border-right: 1px solid var(--color-gray-700);
 }
 
 .logout-button {
-    background-color: var(--color-gray-900);
-    color: var(--color-primary-0);
+    background-color: var(--color-gray-800);
+    color: var(--color-gray-50);
 
     padding: 8px;
 
@@ -62,6 +62,6 @@ onMounted(() => {
 }
 
 .logout-button:hover {
-    background-color: var(--color-gray-800);
+    background-color: var(--color-gray-700);
 }
 </style>

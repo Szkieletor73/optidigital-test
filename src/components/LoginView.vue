@@ -73,16 +73,16 @@ const handleLogin = async () => {
     margin: auto;
     padding: 32px;
 
-    border: 1px solid var(--color-gray-700);
+    border: 1px solid var(--color-gray-600);
     border-radius: 4px;
 
     box-shadow: 0px 4px 8px 2px rgba(0, 0, 0, 0.5);
 
-    background: var(--color-gray-800);
+    background: var(--color-gray-700);
 }
 
 .title {
-    color: var(--color-gray-50);
+    color: var(--color-gray-0);
     text-align: center;
     margin-top: 0;
     margin-bottom: 16px;
@@ -102,12 +102,12 @@ const handleLogin = async () => {
 }
 
 .form-group input {
-    background-color: var(--color-gray-900);
+    background-color: var(--color-gray-800);
     color: var(--color-gray-50);
 
     padding: 8px;
 
-    border: 1px solid var(--color-gray-700);
+    border: 1px solid var(--color-gray-600);
     border-radius: 4px;
 
     font-size: 1rem;
@@ -120,7 +120,7 @@ const handleLogin = async () => {
 }
 
 .form-group input:disabled {
-    background-color: var(--color-gray-700);
+    background-color: var(--color-gray-600);
     cursor: not-allowed;
 }
 
@@ -137,7 +137,7 @@ const handleLogin = async () => {
 
 .login-button {
     background-color: var(--color-primary);
-    color: var(--color-primary-0);
+    color: var(--color-primary-50);
 
     padding: 0.75rem;
 
@@ -150,11 +150,11 @@ const handleLogin = async () => {
 }
 
 .login-button:hover:not(:disabled) {
-    background-color: var(--color-primary-800);
+    background-color: var(--color-primary-700);
 }
 
 .login-button:disabled {
-    background-color: var(--color-gray-700);
+    background-color: var(--color-gray-600);
     cursor: not-allowed;
 }
 </style>
