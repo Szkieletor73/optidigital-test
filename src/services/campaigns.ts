@@ -24,6 +24,10 @@ export interface UpdateCampaignData extends CreateCampaignData {
     id: number
 }
 
+/**
+ * Sends requests with proper data to the backend, and returns Promises that eventually resolve to the response.
+ * All the actual work is done within stores that handle the data.
+ */
 export class CampaignsService {
     async getCampaigns(): Promise<Campaign[]> {
         return apiRequest<Campaign[]>('/campaigns/')

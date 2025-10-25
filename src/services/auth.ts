@@ -14,10 +14,14 @@ export interface AuthToken {
 export interface User {
     id: number
     username: string
-    email?: string
 }
 
 export class AuthService {
+    /**
+     * Performs the login action on the backend.
+     * @param credentials username and password
+     * @returns Authentication token if the user was logged in
+     */
     async login(credentials: LoginCredentials): Promise<AuthToken> {
         // FastAPI OAuth2PasswordRequestForm expects form data
         const formData = new FormData()
