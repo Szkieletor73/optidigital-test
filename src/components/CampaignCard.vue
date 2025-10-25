@@ -52,6 +52,7 @@ const formatCurrency = (amount: number) => {
         <div class="campaign-actions">
             <button class="edit-button" @click="$emit('edit', campaign)">Edit</button>
             <button class="edit-button" @click="$emit('toggle', campaign)">Toggle</button>
+            <div class="action-spacer"></div>
             <button class="delete-button" @click="$emit('delete', campaign.id)">Delete</button>
         </div>
     </div>
@@ -71,7 +72,6 @@ const formatCurrency = (amount: number) => {
 }
 
 .campaign-card.inactive {
-    opacity: 0.7;
     background-color: var(--color-gray-800);
 }
 
@@ -133,6 +133,10 @@ const formatCurrency = (amount: number) => {
     cursor: pointer;
     font-size: 0.875rem;
     transition: background-color 0.2s;
+}
+
+.action-spacer {
+    flex: 1;
 }
 
 .edit-button {

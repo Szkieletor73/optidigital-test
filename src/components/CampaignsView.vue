@@ -48,6 +48,13 @@ const handleEditCampaign = (campaign: Campaign) => {
     console.log('Edit campaign:', campaign)
 }
 
+const handleToggleCampaign = (campaign: Campaign) => {
+    console.log(campaign.status)
+    campaign.status = !campaign.status
+    console.log(campaign.status)
+    campaignsStore.updateCampaign(campaign.id, campaign)
+}
+
 const handleCancelForm = () => {
     showCreateForm.value = false
 }
@@ -79,7 +86,7 @@ const handleCancelForm = () => {
                 :active-campaigns="campaignsStore.activeCampaigns.length" :total-budget="campaignsStore.totalBudget" />
 
             <CampaignsList :campaigns="campaignsStore.campaignsList" @delete="handleDeleteCampaign"
-                @edit="handleEditCampaign" />
+                @edit="handleEditCampaign" @toggle="handleToggleCampaign" />
         </div>
 
         <!-- Empty state -->

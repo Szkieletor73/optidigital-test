@@ -162,6 +162,7 @@ const resetForm = () => {
 
 .form-group input,
 .form-group textarea {
+    color-scheme: dark;
     background-color: var(--color-gray-800);
     color: var(--color-gray-50);
 

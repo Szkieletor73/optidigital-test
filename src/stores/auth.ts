@@ -1,4 +1,3 @@
-// Auth store using Pinia
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { authService, type LoginCredentials, type User } from '@/services/auth'
