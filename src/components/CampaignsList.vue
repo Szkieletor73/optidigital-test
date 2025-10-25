@@ -27,7 +27,7 @@ defineEmits<Emits>()
 .campaigns-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
+    gap: 24px;
 }
 
 @media (max-width: 768px) {
