@@ -32,6 +32,7 @@ coverage
 # Python
 backend-src/.venv
 __pycache__
+database.db
 
 # Docker
 .env
