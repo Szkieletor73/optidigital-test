@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from '../App.vue'
+import { useAuthStore } from '@/stores/auth'
 
 // Create a mock router for testing
 const router = createRouter({
@@ -15,22 +16,14 @@ const router = createRouter({
 
 describe('App', () => {
     it('mounts and renders properly', async () => {
+        const pinia = createTestingPinia({
+            createSpy: vi.fn,
+            stubActions: false
+        })
+
         const wrapper = mount(App, {
             global: {
-                plugins: [
-                    createTestingPinia({
-                        createSpy: vi.fn,
-                        initialState: {
-                            auth: {
-                                user: null,
-                                token: null,
-                                isLoading: false,
-                                error: null
-                            }
-                        }
-                    }),
-                    router
-                ],
+                plugins: [pinia, router],
                 stubs: {
                     RouterView: true
                 }
@@ -48,27 +41,29 @@ describe('App', () => {
     })
 
     it('shows user controls when authenticated', async () => {
+        const pinia = createTestingPinia({
+            createSpy: vi.fn,
+            stubActions: false
+        })
+
         const wrapper = mount(App, {
             global: {
-                plugins: [
-                    createTestingPinia({
-                        createSpy: vi.fn,
-                        initialState: {
-                            auth: {
-                                user: { username: 'testuser' },
-                                token: 'fake-token',
-                                isLoading: false,
-                                error: null
-                            }
-                        }
-                    }),
-                    router
-                ],
+                plugins: [pinia, router],
                 stubs: {
                     RouterView: true
                 }
             }
         })
+
+        // Get the auth store and set authenticated state
+        const authStore = useAuthStore(pinia)
+        authStore.user = { id: 1, username: 'testuser' }
+
+        // Mock localStorage to simulate having a token
+        vi.mocked(window.localStorage.getItem).mockReturnValue('fake-token')
+
+        // Initialize the store to pick up the token from localStorage
+        authStore.initialize()
 
         await wrapper.vm.$nextTick()
 
@@ -79,27 +74,29 @@ describe('App', () => {
     })
 
     it('hides user controls when not authenticated', async () => {
+        const pinia = createTestingPinia({
+            createSpy: vi.fn,
+            stubActions: false
+        })
+
         const wrapper = mount(App, {
             global: {
-                plugins: [
-                    createTestingPinia({
-                        createSpy: vi.fn,
-                        initialState: {
-                            auth: {
-                                user: null,
-                                token: null,
-                                isLoading: false,
-                                error: null
-                            }
-                        }
-                    }),
-                    router
-                ],
+                plugins: [pinia, router],
                 stubs: {
                     RouterView: true
                 }
             }
         })
+
+        // Get the auth store and ensure it's not authenticated (default state)
+        const authStore = useAuthStore(pinia)
+        authStore.user = null
+
+        // Mock localStorage to return null (no token)
+        vi.mocked(window.localStorage.getItem).mockReturnValue(null)
+
+        // Initialize the store to pick up the lack of token
+        authStore.initialize()
 
         await wrapper.vm.$nextTick()
 
