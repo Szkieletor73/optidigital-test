@@ -11,6 +11,7 @@ import EmptyState from './EmptyState.vue'
 
 const campaignsStore = useCampaignsStore()
 const showCreateForm = ref(false)
+const editingCampaign = ref<Campaign | null>(null)
 
 onMounted(async () => {
     try {
@@ -22,10 +23,18 @@ onMounted(async () => {
 
 const handleCreateCampaign = async (campaignData: CreateCampaignData) => {
     try {
-        await campaignsStore.createCampaign(campaignData)
+        if (editingCampaign.value) {
+            await campaignsStore.updateCampaign(editingCampaign.value.id, {
+                id: editingCampaign.value.id,
+                ...campaignData
+            })
+        } else {
+            await campaignsStore.createCampaign(campaignData)
+        }
         showCreateForm.value = false
+        editingCampaign.value = null
     } catch (error) {
-        console.error('Failed to create campaign:', error)
+        console.error('Failed to save campaign:', error)
     }
 }
 
@@ -44,8 +53,8 @@ const handleDeleteCampaign = async (id: number) => {
 }
 
 const handleEditCampaign = (campaign: Campaign) => {
-    // TODO: Implement edit functionality
-    console.log('Edit campaign:', campaign)
+    editingCampaign.value = campaign
+    showCreateForm.value = true
 }
 
 const handleToggleCampaign = (campaign: Campaign) => {
@@ -57,6 +66,7 @@ const handleToggleCampaign = (campaign: Campaign) => {
 
 const handleCancelForm = () => {
     showCreateForm.value = false
+    editingCampaign.value = null
 }
 </script>
 
@@ -65,7 +75,7 @@ const handleCancelForm = () => {
         <div class="campaigns-header">
             <h1>Campaigns</h1>
             <button v-if="!showCreateForm" @click="showCreateForm = !showCreateForm" class="create-button">
-                {{ showCreateForm ? 'Cancel' : 'Create Campaign' }}
+                Create Campaign
             </button>
         </div>
 
@@ -73,9 +83,9 @@ const handleCancelForm = () => {
         <ErrorMessage v-if="campaignsStore.error" :message="campaignsStore.error"
             @close="campaignsStore.clearError()" />
 
-        <!-- Create campaign form -->
-        <CampaignForm v-if="showCreateForm" :is-loading="campaignsStore.isLoading" @submit="handleCreateCampaign"
-            @error="handleValidationError" @cancel="handleCancelForm" />
+        <!-- Create/Edit campaign form -->
+        <CampaignForm v-if="showCreateForm" :is-loading="campaignsStore.isLoading" :edit-campaign="editingCampaign"
+            @submit="handleCreateCampaign" @error="handleValidationError" @cancel="handleCancelForm" />
 
         <!-- Loading state -->
         <LoadingSpinner v-if="campaignsStore.isLoading && !showCreateForm" message="Loading campaigns..." />

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { CreateCampaignData } from '@/services/campaigns'
+import { ref, watch } from 'vue'
+import type { CreateCampaignData, Campaign } from '@/services/campaigns'
 
 interface Props {
     isLoading?: boolean
+    editCampaign?: Campaign | null
 }
 
 interface Emits {
@@ -13,7 +14,7 @@ interface Emits {
 }
 
 const emit = defineEmits<Emits>()
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const formData = ref<CreateCampaignData>({
     name: '',
@@ -23,6 +24,20 @@ const formData = ref<CreateCampaignData>({
     budget: 0,
     status: true
 })
+
+// If an editCampaign is passed, populate the form with it's data
+watch(() => props.editCampaign, (campaign) => {
+    if (campaign) {
+        formData.value = {
+            name: campaign.name,
+            description: campaign.description,
+            start_date: campaign.start_date,
+            end_date: campaign.end_date,
+            budget: campaign.budget,
+            status: campaign.status
+        }
+    }
+}, { immediate: true })
 
 function validate() {
     if (formData.value.start_date >= formData.value.end_date) {
@@ -58,7 +73,7 @@ const resetForm = () => {
 <template>
     <div class="overlay">
         <div class="create-form">
-            <h3>Creating a new campaign</h3>
+            <h3>{{ editCampaign ? 'Edit Campaign' : 'Creating a new campaign' }}</h3>
             <form @submit.prevent="handleSubmit">
                 <div class="form-row">
                     <div class="form-group">
@@ -96,7 +111,7 @@ const resetForm = () => {
 
                 <div class="form-actions">
                     <button type="submit" :disabled="isLoading">
-                        {{ isLoading ? 'Submitting...' : 'Submit' }}
+                        {{ isLoading ? 'Submitting...' : (editCampaign ? 'Update' : 'Submit') }}
                     </button>
                     <button type="button" @click="$emit('cancel')" class="cancel-button">
                         Cancel
